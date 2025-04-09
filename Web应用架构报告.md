@@ -119,27 +119,27 @@
 #### Controller层（控制层）
 - **职责**：接收HTTP请求，解析参数，调用业务逻辑，返回响应。
 - **核心模块**：
-- AuthController：处理用户认证、权限验证（基于Spring Security）。
-- JobController：职位发布、搜索、详情查询（支持模糊搜索和智能推荐）。
-- ResumeController：简历上传、解析（PDF/Word格式）、存储（OSS云存储）。
-- ApplicationController：申请记录管理（状态更新、撤回逻辑）。
-- AnnouncementController：公告发布、置顶、下架（定时任务支持）。
+	- AuthController：处理用户认证、权限验证（基于Spring Security）。
+	- JobController：职位发布、搜索、详情查询（支持模糊搜索和智能推荐）。
+	- ResumeController：简历上传、解析（PDF/Word格式）、存储（OSS云存储）。
+	- ApplicationController：申请记录管理（状态更新、撤回逻辑）。
+	- AnnouncementController：公告发布、置顶、下架（定时任务支持）。
 - **技术实现**：Spring Boot的@RestController，支持RESTful API设计。
 #### Model层（模型层）
 - **职责**：定义数据结构，封装数据库操作和业务逻辑。
 - **核心模块**：
-- **数据模型**：User、Job、Resume、Application等，对应数据库表结构。
-- **业务逻辑**：
-- 职位审核逻辑（管理员审核企业发布的职位）。
-- 简历匹配算法（根据职位要求智能推荐简历）。
-- 申请状态机（投递→审核→面试→Offer）。
+	- **数据模型**：User、Job、Resume、Application等，对应数据库表结构。
+	- **业务逻辑**：
+		- 职位审核逻辑（管理员审核企业发布的职位）。
+		- 简历匹配算法（根据职位要求智能推荐简历）。
+		- 申请状态机（投递→审核→面试→Offer）。
 - **技术实现**：JPA/Hibernate实现ORM，Redis缓存热点数据（如职位列表）。
 #### View层（视图层）
 - **职责**：生成最终响应内容，支持前端渲染和服务端渲染。
 - **核心模块**：
-- API响应生成：返回JSON/XML格式数据（用于Vue.js前端）。
-- 模板渲染引擎：Thymeleaf生成动态HTML（管理员后台页面）。
-- 技术实现：Vue.js单页应用（SPA），Axios处理API请求。
+	- API响应生成：返回JSON/XML格式数据（用于Vue.js前端）。
+	- 模板渲染引擎：Thymeleaf生成动态HTML（管理员后台页面）。
+- **技术实现**：Vue.js单页应用（SPA），Axios处理API请求。
 #### 数据访问层（DAO）
 - **职责**：封装数据库操作，支持读写分离和分库分表。
 - **技术实现**：MyBatis动态SQL，结合Sharding-JDBC分片。
@@ -152,18 +152,18 @@
 ### 3.交互流程示例
 - **学生投递简历**
 - 步骤：
-- 学生通过Vue前端提交简历表单。
-- Nginx将请求路由到ResumeController。
-- ResumeController调用ResumeModel解析简历文件并存储元数据。
-- ApplicationModel创建申请记录，校验职位是否开放。
-- 通过RabbitMQ异步发送邮件通知企业。
-- 返回JSON响应{"status": "success", "message": "简历已投递"}。
+	- 学生通过Vue前端提交简历表单。
+	- Nginx将请求路由到ResumeController。
+	- ResumeController调用ResumeModel解析简历文件并存储元数据。
+	- ApplicationModel创建申请记录，校验职位是否开放。
+	- 通过RabbitMQ异步发送邮件通知企业。
+	- 返回JSON响应{"status": "success", "message": "简历已投递"}。
 - **企业发布职位**
 - 步骤：
-- 企业填写职位信息并提交。
-- JobController调用JobModel保存职位数据，状态设为“待审核”。
-- 管理员后台审核通过后，状态更新为“招聘中”。
-- Redis缓存热门职位列表，提升查询性能。
+	- 企业填写职位信息并提交。
+	- JobController调用JobModel保存职位数据，状态设为“待审核”。
+	- 管理员后台审核通过后，状态更新为“招聘中”。
+	- Redis缓存热门职位列表，提升查询性能。
 
 ### 4.技术选型与扩展性
 | 组件 | 技术选型 | 扩展性设计 |
