@@ -188,7 +188,7 @@
  	- API文档：Swagger生成接口文档，支持在线测试。
   	- 自动化部署：Jenkins + Docker实现CI/CD。
 
-#### 6.数据库映射关系
+### 6.数据库映射关系
 | Model类 | 数据库表 | 关键字段映射 |
 |:-----------:|:-----------:|:-----------:|
 | UserModel | users | id ↔ user_id, username ↔ username |
@@ -196,5 +196,5 @@
 | ResumeModel | resumes | file_path ↔ resume_path |
 | ApplicationModel | applications | status ↔ application_status |
 
-#### 7.总结
+### 7.总结
 本架构通过MVC分层实现了职责分离，同时整合了高并发、安全性、可维护性等非功能需求。未来可通过微服务化进一步扩展系统能力（如独立简历解析服务、智能推荐引擎），满足更大规模的校园招聘需求。
