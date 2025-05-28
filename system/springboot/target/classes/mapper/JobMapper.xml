@@ -1,0 +1,81 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.JobMapper">
+
+    <select id="selectAll" resultType="com.example.entity.Job">
+        select * from `job`
+        <where>
+            <if test="name != null">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="publisherId != null">
+                and publisher_id = #{publisherId}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteById">
+        delete from `job`
+        where id = #{id}
+    </delete>
+
+
+    <insert id="insert" parameterType="com.example.entity.Job" useGeneratedKeys="true">
+        insert into `job`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="publisherId != null">publisher_id,</if>
+            <if test="company != null">company,</if>
+            <if test="name != null">name,</if>
+            <if test="description != null">description,</if>
+            <if test="salary != null">salary,</if>
+            <if test="requirement != null">requirement,</if>
+            <if test="base != null">base,</if>
+            <if test="type != null">type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="publisherId != null">#{publisherId},</if>
+            <if test="company != null">#{company},</if>
+            <if test="name != null">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="salary != null">#{salary},</if>
+            <if test="requirement != null">#{requirement},</if>
+            <if test="base != null">#{base},</if>
+            <if test="type != null">#{type},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Job">
+        update `job`
+        <set>
+            <if test="publisherId != null">
+                publisher_id = #{publisherId},
+            </if>
+            <if test="company != null">
+                company = #{company},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="salary != null">
+                salary = #{salary},
+            </if>
+            <if test="requirement != null">
+                requirement = #{requirement},
+            </if>
+            <if test="base != null">
+                base = #{base},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

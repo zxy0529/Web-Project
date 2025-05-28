@@ -1,0 +1,101 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ApplicationMapper">
+
+    <select id="selectAll" resultType="com.example.entity.Application">
+        select application.*,user.name as userName,job.name as jobName from `application`
+        left join user on application.user_id = user.id
+        left join job on application.job_id=job.id
+        <where>
+            <if test="jobName != null"> and job.name like concat('%', #{jobName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectByPublisherId" resultType="com.example.entity.Application">
+        SELECT
+            a.*,
+            u.name AS userName,
+            j.name AS jobName
+        FROM application a
+                 LEFT JOIN user u ON a.user_id = u.id
+                 LEFT JOIN job j ON a.job_id = j.id
+        WHERE j.publisher_id = #{publisherId}
+    </select>
+
+
+    <delete id="deleteById">
+        delete from `application`
+        where id = #{id}
+    </delete>
+
+
+    <insert id="insert" parameterType="com.example.entity.Application" useGeneratedKeys="true">
+        insert into `application`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="jobId != null">job_id,</if>
+            <if test="file != null">file,</if>
+            <if test="status != null">status,</if>
+            <if test="auditTime != null">audit_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="jobId != null">#{jobId},</if>
+            <if test="file != null">#{file},</if>
+            <if test="status != null">#{status},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Application">
+        update `application`
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="jobId != null">
+                job_id = #{jobId},
+            </if>
+            <if test="file != null">
+                file = #{file},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="auditTime != null">
+                audit_time = #{auditTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="selectMy" resultType="com.example.entity.Application">
+        SELECT application.*, user.name AS userName, job.name AS jobName
+        FROM `application`
+        LEFT JOIN user ON application.user_id = user.id
+        LEFT JOIN job ON application.job_id = job.id
+        <where>
+            AND application.user_id = #{userId}
+            <if test="jobName != null and jobName != ''">
+                AND job.name LIKE CONCAT('%', #{jobName}, '%')
+            </if>
+        </where>
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="selectMyTotal" resultType="int">
+        SELECT COUNT(*)
+        FROM `application`
+        LEFT JOIN job ON application.job_id = job.id
+        WHERE application.user_id = #{userId}
+        <if test="jobName != null and jobName != ''">
+            AND job.name LIKE CONCAT('%', #{jobName}, '%')
+        </if>
+    </select>
+
+
+
+</mapper>
