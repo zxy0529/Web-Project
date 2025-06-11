@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.common.Result;
+import com.example.dto.DashboardStatsDTO;
 import com.example.entity.Application;
 import com.example.mapper.ApplicationMapper;
 import com.example.service.ApplicationService;
@@ -110,6 +111,11 @@ public class ApplicationController {
         return Result.success(pageInfo);
     }
 
+    @GetMapping("/stats")
+    public Result getDashboardStats() {
+        DashboardStatsDTO stats = applicationService.getDashboardStats();
+        return Result.success(stats);
+    }
 
 
 }

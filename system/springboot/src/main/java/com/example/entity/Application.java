@@ -16,4 +16,5 @@ public class Application {
     private String auditTime;
     private String userName;
     private String jobName;
+    private String jobType;
 }

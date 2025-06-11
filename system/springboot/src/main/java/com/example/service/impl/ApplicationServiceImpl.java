@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.example.common.enums.RoleEnum;
+import com.example.dto.DashboardStatsDTO;
 import com.example.entity.Account;
 import com.example.entity.Application;
 
@@ -92,5 +93,23 @@ public class ApplicationServiceImpl implements ApplicationService {
         return PageInfo.of(list);
     }
 
+    @Override
+    public DashboardStatsDTO getDashboardStats() {
+        Integer currentPublisherId = Objects.requireNonNull(TokenUtils.getCurrentUser()).getId();
+        Integer total = applicationMapper.countAllApplications(currentPublisherId);
+        Integer intern = applicationMapper.countIntern(currentPublisherId);
+        Integer fulltime = applicationMapper.countFulltime(currentPublisherId);
+        List<DashboardStatsDTO.JobCount> byJobName = applicationMapper.countByJobName(currentPublisherId);
+        List<Application> recent = applicationMapper.selectRecent(currentPublisherId);
+
+        DashboardStatsDTO dto = new DashboardStatsDTO();
+        dto.setTotal(total);
+        dto.setIntern(intern);
+        dto.setFulltime(fulltime);
+        dto.setByJobName(byJobName);
+        dto.setRecent(recent);
+
+        return dto;
+    }
 
 }

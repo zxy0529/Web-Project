@@ -36,7 +36,11 @@
             router
             class="border-none"
         >
-          <el-menu-item index="/manager/home">
+          <el-menu-item index="/manager/dashboard" v-if="data.user.role === 'COMPANY_USER'">
+            <el-icon><HomeFilled /></el-icon>
+            <span>系统首页</span>
+          </el-menu-item>
+          <el-menu-item index="/manager/home" v-if="data.user.role === 'USER'">
             <el-icon><HomeFilled /></el-icon>
             <span>系统首页</span>
           </el-menu-item>

@@ -12,6 +12,21 @@
         </where>
     </select>
 
+    <select id="selectRecent" resultType="com.example.entity.Application">
+        SELECT
+            a.*,
+            u.name AS userName,
+            j.name AS jobName,
+            j.type AS jobType
+        FROM application a
+                 LEFT JOIN user u ON a.user_id = u.id
+                 LEFT JOIN job j ON a.job_id = j.id
+        WHERE j.publisher_id = #{publisherId}
+        ORDER BY a.audit_time DESC
+        LIMIT 10
+    </select>
+
+
     <select id="selectByPublisherId" resultType="com.example.entity.Application">
         SELECT
             a.*,

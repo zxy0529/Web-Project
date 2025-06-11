@@ -1,4 +1,5 @@
 package com.example.service;
+import com.example.dto.DashboardStatsDTO;
 import com.example.entity.Application;
 
 import com.github.pagehelper.PageInfo;
@@ -31,4 +32,5 @@ public interface ApplicationService {
     public List<Application> selectByPublisher();
     public PageInfo<Application> selectPageByPublisher(Integer pageNum, Integer pageSize);
 
+    DashboardStatsDTO getDashboardStats();
 }
