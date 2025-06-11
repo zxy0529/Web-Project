@@ -208,7 +208,7 @@ Spring Security的优势：
 测试目的：验证系统是否对用户输入进行有效过滤和输出编码，防止恶意脚本执行
 |测试场景|测试步骤|预期结果|
 |:---:|:---:|:---:|
-|简历内容注入|1.在简历文本框中输入`<script>alert('XSS')</script>`\2.提交并查看简历详情页|1. 无弹窗警告\2. 页面显示原始文本而非执行脚本\3. HTML特殊字符被转义（如`<→&lt`;）|
+|简历内容注入|1.在简历文本框中输入`<script>alert('XSS')</script>`  2.提交并查看简历详情页|1. 无弹窗警告  2. 页面显示原始文本而非执行脚本  3. HTML特殊字符被转义（如`<→&lt`;）|
 |用户名存储型XSS|1. 注册用户名为：`<img src=x onerror=alert(1)>` 2. 登录后查看用户信息页|1. 用户名显示为普通文本  2. 无图片加载错误触发|
 |DOM型XSS|1. 在搜索框中输入：`><svg/onload=alert(document.cookie)>`  2. 执行搜索操作|1. 搜索结果显示正常  2. cookie信息未被泄露|
 |JSON响应XSS|1. 修改API请求，在参数中注入：`{"name":"test","value":"\"};alert(1);//"}`  2. 检查API响应内容|1. 响应中的特殊字符被正确转义  2. 无脚本执行迹象|
@@ -224,38 +224,143 @@ Spring Security的优势：
 测试目的：验证关键操作是否受到CSRF Token保护
 |测试场景|测试步骤|预期结果|
 |:---:|:---:|:---:|
-|密码修改绕过|1. 登录用户A\2. 在另一个标签页打开伪造页面：`<form action="/updatePassword" method="POST">``<input name="newPassword" value="hacked">``</form<script>document.forms[0].submit()</script>`|1. 密码修改请求被拒绝\2. 日志记录CSRF验证失败\3. 实际密码未变更|
-|简历投递伪造|1. 构造恶意页面自动提交POST请求到投递接口\2. 用户访问该页面时已登录|1. 投递操作失败\2. 返回"缺少CSRF Token"错误|
-###4.文件上传漏洞测试
+|密码修改绕过|1. 登录用户A  2. 在另一个标签页打开伪造页面：`<form action="/updatePassword" method="POST">``<input name="newPassword" value="hacked">``</form<script>document.forms[0].submit()</script>`|1. 密码修改请求被拒绝  2. 日志记录CSRF验证失败  3. 实际密码未变更|
+|简历投递伪造|1. 构造恶意页面自动提交POST请求到投递接口  2. 用户访问该页面时已登录|1. 投递操作失败  2. 返回"缺少CSRF Token"错误|
+### 4.文件上传漏洞测试
 测试目的：验证文件上传功能的安全控制有效性
 |测试场景|测试步骤|预期结果|
 |:---:|:---:|:---:|
-|恶意文件上传|1. 上传包含PHP代码的.jpg文件/2. 尝试通过URL直接访问上传文件|1. 上传被拒绝（内容类型检测）\2. 即使上传成功也无法执行|
-|目录遍历攻击|1. 上传文件名：`../../malicious.exe`\2. 提交上传请求|1. 文件名被重命名处理\2. 文件存储在隔离目录|
-|超大文件攻击|上传超过配置限制的文件|1. 请求被立即拒绝\2. 返回"文件大小超过限制"错误\3. 服务器资源不受影响|
+|恶意文件上传|1. 上传包含PHP代码的.jpg文件  2. 尝试通过URL直接访问上传文件|1. 上传被拒绝（内容类型检测）  2. 即使上传成功也无法执行|
+|目录遍历攻击|1. 上传文件名：`../../malicious.exe`  2. 提交上传请求|1. 文件名被重命名处理  2. 文件存储在隔离目录|
+|超大文件攻击|上传超过配置限制的文件|1. 请求被立即拒绝  2. 返回"文件大小超过限制"错误  3. 服务器资源不受影响|
 ### 5.JWT令牌安全测试
 测试目的：验证JWT令牌的生成、验证和失效机制安全性
 |测试场景|测试步骤|预期结果|
 |:---:|:---:|:---:|
-|令牌篡改|1. 获取有效JWT\2. 修改payload中的角色字段\3. 使用篡改后的令牌访问管理员接口|1. 签名验证失败\2. 返回401未授权状态|
-|令牌泄露|1. 使用已注销用户的旧令牌访问API\2. 使用不同设备的相同令牌并发访问|1. 旧令牌访问被拒绝\2. 并发请求触发异常检测|
-|敏感信息泄露|1. Base64解码JWT令牌\2. 检查payload内容|1. 不包含密码等敏感信息\2. 用户角色使用不可逆标识符|
+|令牌篡改|1. 获取有效JWT  2. 修改payload中的角色字段  3. 使用篡改后的令牌访问管理员接口|1. 签名验证失败  2. 返回401未授权状态|
+|令牌泄露|1. 使用已注销用户的旧令牌访问API  2. 使用不同设备的相同令牌并发访问|1. 旧令牌访问被拒绝  2. 并发请求触发异常检测|
+|敏感信息泄露|1. Base64解码JWT令牌  2. 检查payload内容|1. 不包含密码等敏感信息  2. 用户角色使用不可逆标识符|
 ### 6.访问控制测试
 测试目的：验证权限控制机制的严谨性
 |测试场景|测试步骤|预期结果|
 |:---:|:---:|:---:|
-|水平越权|1. 用户A登录\2. 直接访问用户B的简历详情页：`/resume/B`|1. 返回403禁止访问\2. 日志记录越权尝试|
-|垂直越权|1. 普通用户尝试访问：`/admin/user-list`\2. 修改请求参数为管理员资源ID|1. 返回"权限不足"错误\2. 操作被审计日志记录|
-|接口未授权访问|未登录状态下直接访问：`/api/user/profile`|1. 返回401未认证状态\2. 重定向到登录页面|
+|水平越权|1. 用户A登录  2. 直接访问用户B的简历详情页：`/resume/B`|1. 返回403禁止访问  2. 日志记录越权尝试|
+|垂直越权|1. 普通用户尝试访问：`/admin/user-list`  2. 修改请求参数为管理员资源ID|1. 返回"权限不足"错误  2. 操作被审计日志记录|
+|接口未授权访问|未登录状态下直接访问：`/api/user/profile`|1. 返回401未认证状态  2. 重定向到登录页面|
 
 ## 四、AWVS扫描分析与防护方案
 ### 1.工具选择：Acunetix Web Vulnerability Scanner (AWVS)
-- **选择理由**
+ **选择理由**
 - 深度爬虫能力：全面识别SPA动态内容
 - 高级漏洞检测：包含15000+安全测试用例
 - CI/CD集成：支持REST API自动化扫描
 - 详细报告：提供CVSS评分和修复指南
 - 零误报保证：独特的Proof-Based Scanning技术
+### 2.AWVS扫描配置方案
+```bash
+# Docker版AWVS扫描命令
+docker run -d -p 3443:3443 --name awvs acunetix/awvs
+
+# 扫描配置参数
+{
+  "target": "https://campus-recruit.example.com",
+  "profile": "Full Scan",
+  "excluded_paths": ["/logout", "/api/health"],
+  "custom_headers": {"Authorization": "Bearer <temp_token>"},
+  "scan_speed": "moderate",
+  "crawl_domains": "current-domain"
+}
+```
+### 3.典型漏洞报告分析及防护
+**漏洞1：反射型XSS(高危)**
+- 报告摘要
+```test
+[Critical] Cross-site Scripting (Reflected)
+URL: https://campus-recruit.example.com/search?keyword=<script>alert(1)</script>
+Parameter: keyword
+CVSS: 9.1
+```
+- 防护方案
+```java
+// Spring Boot XSS防护配置
+@Configuration
+public class XssConfig implements WebMvcConfigurer {
+    
+@Bean
+public FilterRegistrationBean<XssFilter> xssFilter() {
+	FilterRegistrationBean<XssFilter> registration = new FilterRegistrationBean<>();
+ 	registration.setFilter(new XssFilter());
+        registration.addUrlPatterns("/*");
+        return registration;
+}
+    
+// 使用Jsoup进行输入过滤
+public static String cleanXss(String value) {
+        return Jsoup.clean(value, 
+            Safelist.relaxed()
+                .addAttributes("a", "href")
+                .addProtocols("a", "href", "ftp", "http", "https"));
+    }
+}
+
+// 前端输出编码
+function encodeHTML(str) {
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#39;');
+}
+```
+**漏洞2：SQL注入（严重）**
+- 报告摘要
+```text
+[Critical] SQL Injection
+URL: https://campus-recruit.example.com/api/users?id=1' AND SLEEP(5)--
+Parameter: id
+CVSS: 9.8
+```
+- 防护方案
+```java
+// MyBatis参数化查询
+public interface UserMapper {
+    @Select("SELECT * FROM users WHERE id = #{id}")
+    User findById(@Param("id") Long id);
+}
+
+// Hibernate Criteria API
+public User findById(Long id) {
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<User> query = cb.createQuery(User.class);
+    Root<User> root = query.from(User.class);
+    query.where(cb.equal(root.get("id"), id));
+    return entityManager.createQuery(query).getSingleResult();
+}
+
+// 添加SQL注入过滤器
+public class SqlInjectionFilter extends OncePerRequestFilter {
+    private static final Pattern SQL_PATTERN = Pattern.compile(
+        "('(''|[^'])*')|(;)|(\b(ALTER|CREATE|DELETE|DROP|EXEC|INSERT|SELECT|UPDATE)\b)",
+        Pattern.CASE_INSENSITIVE
+    );
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, ...) {
+        Map<String, String[]> params = request.getParameterMap();
+        for (String key : params.keySet()) {
+            for (String value : params.get(key)) {
+                if (SQL_PATTERN.matcher(value).find()) {
+                    auditService.logAttackAttempt(request, "SQL Injection");
+                    throw new SecurityException("Invalid input detected");
+                }
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+}
+```
+
+
 
 
 
