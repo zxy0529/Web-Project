@@ -28,6 +28,7 @@ QPS：Query Per Second 每秒查询率。（一台查询服务器每秒能够处
 # 五、WebUI测试
 通过Selenium脚本模拟用户端操作。脚本代码定位页面元素（输入框、按钮），执行登录/表单提交操作。
 所有核心流程在两种主流浏览器中均能顺利执行，无定位失败或断言错误。
+
 ![webUI测试](assets/webUI测试.png)
 
 ![webUI2测试](assets/webUI测试2.png)
