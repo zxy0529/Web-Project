@@ -18,7 +18,8 @@ const router = createRouter({
         { path: 'jobs', meta: { name: '职位信息' }, component: () => import('@/views/manager/Jobs.vue'), },
         { path: 'application', meta: { name: '投递职位' }, component: () => import('@/views/manager/Application.vue'), },
         { path: 'applicationInfo', meta: { name: '投递信息' }, component: () => import('@/views/manager/ApplicationInfo.vue'), },
-        { path: 'dashboard', meta: { name: '仪表盘' }, component: () => import('@/views/manager/dashboard.vue'), }
+        { path: 'dashboard', meta: { name: '仪表盘' }, component: () => import('@/views/manager/dashboard.vue'), },
+        { path: 'notice', meta: { name: '系统公告' }, component: () => import('@/views/manager/notice.vue'), }
       ]
     },
     { path: '/login', component: () => import('@/views/Login.vue') },

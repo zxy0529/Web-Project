@@ -77,7 +77,7 @@ const login = () => {
             router.push("/manager/dashboard");
           } else if (userRole === "ADMIN") {
             // 管理员跳转到管理员首页
-            router.push("/manager/home");
+            router.push("/manager/notice");
           } else {
             router.push("/manager/home");
           }
