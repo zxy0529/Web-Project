@@ -9,6 +9,7 @@ import com.example.entity.Publisher;
 import com.example.exception.CustomException;
 import com.example.mapper.PublisherMapper;
 import com.example.service.PublisherService;
+import com.example.utils.MD5Util;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -32,6 +33,8 @@ public class PublisherServiceImpl implements PublisherService {
         if (ObjectUtil.isEmpty(publisher.getPassword())) {
             publisher.setPassword(Constants.USER_DEFAULT_PASSWORD);
         }
+        // 密码加密
+        publisher.setPassword(MD5Util.md5Encrypt(publisher.getPassword()));
         if (ObjectUtil.isEmpty(publisher.getName())) {
             publisher.setName(publisher.getUsername());
         }
@@ -75,7 +78,8 @@ public class PublisherServiceImpl implements PublisherService {
         if (ObjectUtil.isNull(dbPublisher)) {
             throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
         }
-        if (!dbPublisher.getPassword().equals(account.getPassword())) {
+        // 对比加密后的密码
+        if (!dbPublisher.getPassword().equals(MD5Util.md5Encrypt(account.getPassword()))) {
             throw new CustomException(ResultCodeEnum.USER_ACCOUNT_ERROR);
         }
         // 生成token
@@ -92,11 +96,12 @@ public class PublisherServiceImpl implements PublisherService {
         if (ObjectUtil.isNull(dbPublisher)) {
             throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
         }
-        if (!account.getPassword().equals(dbPublisher.getPassword())) {
+        // 对比加密后的密码
+        if (!MD5Util.md5Encrypt(account.getPassword()).equals(dbPublisher.getPassword())) {
             throw new CustomException(ResultCodeEnum.PARAM_PASSWORD_ERROR);
         }
-        dbPublisher.setPassword(account.getNewPassword());
+        // 设置新密码并加密
+        dbPublisher.setPassword(MD5Util.md5Encrypt(account.getNewPassword()));
         publisherMapper.updateById(dbPublisher);
     }
-
 }

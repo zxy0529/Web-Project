@@ -70,7 +70,18 @@ const login = () => {
         if (res.code === "200") {
           ElMessage.success("登录成功");
           localStorage.setItem("current-user-role", JSON.stringify(res.data));
-          router.push("/manager/home");
+          const userRole = res.data.role;
+
+          if (userRole === "COMPANY_USER") {
+            // 企业用户跳转到企业首页
+            router.push("/manager/dashboard");
+          } else if (userRole === "ADMIN") {
+            // 管理员跳转到管理员首页
+            router.push("/manager/home");
+          } else {
+            router.push("/manager/home");
+          }
+
         } else {
           ElMessage.error(res.msg);
         }
